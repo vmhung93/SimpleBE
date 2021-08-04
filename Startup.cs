@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
+using SimpleBE.Extensions;
 using SimpleBE.Infrastructure;
 using SimpleBE.Models;
 
@@ -48,6 +49,9 @@ namespace SimpleBE
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SimpleBE v1"));
             }
+
+            // Configure handing errors globally
+            app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
 
