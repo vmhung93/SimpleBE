@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +20,29 @@ namespace SimpleBE
             Configuration = configuration;
         }
 
+        // Cache results of a preflight request 
+        readonly int preflightMaxAge = 86400;
+
+        readonly string allowOrigins = "_allowOrigins";
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Enable Cross-Origin request, see https://docs.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-3.0
+            services.AddCors(options =>
+            {
+                options.AddPolicy(allowOrigins,
+                builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .SetPreflightMaxAge(TimeSpan.FromSeconds(preflightMaxAge));
+                });
+            });
+
             services.AddControllers();
 
             // Register the database context
@@ -49,6 +68,9 @@ namespace SimpleBE
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SimpleBE v1"));
             }
+
+            // Enable Cross-Origin Request, see https://docs.microsoft.com/en-us/aspnet/core/security/cors
+            app.UseCors(allowOrigins);
 
             // Configure handing errors globally
             app.ConfigureExceptionHandler();
