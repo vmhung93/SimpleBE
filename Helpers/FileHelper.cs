@@ -16,7 +16,11 @@ namespace SimpleBE.Helpers
             if (File.Exists(_userPath))
             {
                 var userDTOs = DeserializeUsersFromFile();
-                users.InsertRange(0, userDTOs);
+                
+                if (userDTOs != null)
+                {
+                    users.InsertRange(0, userDTOs);
+                }
             }
 
             // Serialize JSON directly to a file
