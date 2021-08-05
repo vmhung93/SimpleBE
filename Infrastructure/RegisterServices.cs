@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
 using SimpleBE.Services;
+using SimpleBE.Utils;
 
 namespace SimpleBE.Infrastructure
 {
@@ -8,8 +9,12 @@ namespace SimpleBE.Infrastructure
     {
         public static void RegisterServices(this IServiceCollection services)
         {
-            // User
+            // Services
+            services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IUserService, UserService>();
+
+            // Utils
+            services.AddTransient<IJwtUtils, JwtUtils>();
         }
     }
 }

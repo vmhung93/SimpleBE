@@ -3,11 +3,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
+using SimpleBE.Authorization;
 using SimpleBE.Dtos;
 using SimpleBE.Services;
 
 namespace SimpleBE.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase
@@ -22,6 +24,7 @@ namespace SimpleBE.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             var users = await _userService.GetAll();

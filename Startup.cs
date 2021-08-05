@@ -7,8 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-using SimpleBE.Extensions;
+using SimpleBE.Helpers;
 using SimpleBE.Infrastructure;
+using SimpleBE.Middlewares;
 using SimpleBE.Models;
 
 namespace SimpleBE
@@ -39,6 +40,8 @@ namespace SimpleBE
                     builder.AllowAnyOrigin()
                            .AllowAnyHeader()
                            .AllowAnyMethod()
+                           .AllowCredentials()
+                           .WithOrigins("http://localhost:4200")
                            .SetPreflightMaxAge(TimeSpan.FromSeconds(preflightMaxAge));
                 });
             });
@@ -54,6 +57,9 @@ namespace SimpleBE
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleBE", Version = "v1" });
             });
+
+            // Configure strongly typed settings objects
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             // Register services
             services.RegisterServices();
@@ -72,14 +78,17 @@ namespace SimpleBE
             // Enable Cross-Origin Request, see https://docs.microsoft.com/en-us/aspnet/core/security/cors
             app.UseCors(allowOrigins);
 
-            // Configure handing errors globally
-            app.ConfigureExceptionHandler();
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
+
+            // Configure handing errors globally
+            app.UseMiddleware<ErrorHandlerMiddleware>();
+
+            // Custom jwt auth middleware
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
