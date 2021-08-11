@@ -4,54 +4,40 @@ using System.Collections.Generic;
 
 using SimpleBE.Dtos;
 using SimpleBE.Models;
-using SimpleBE.Helpers;
+using SimpleBE.Infrastructure;
+using MapsterMapper;
 
 namespace SimpleBE.Services
 {
     public class UserService : IUserService
     {
-        public UserService()
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper)
         {
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<UserDTO>> GetAll()
+        public IEnumerable<UserDTO> FindAll()
         {
-            var users = FileHelper.DeserializeUsersFromFile();
-            return users;
+            var users = _unitOfWork.Users.FindAll();
+            return _mapper.Map<IEnumerable<UserDTO>>(users);
         }
 
-        public async Task<UserDTO> GetById(Guid id)
+        public UserDTO FindById(Guid id)
         {
-            var users = FileHelper.DeserializeUsersFromFile();
-
-            if (users == null)
-            {
-                return null;
-            }
-
-            return users.Find(u => u.Id == id);
+            var user = _unitOfWork.Users.FindById(id);
+            return _mapper.Map<UserDTO>(user);
         }
 
-        public async Task<UserDTO> Create(CreateUserDTO dto)
+        public async Task Add(CreateUserDTO dto)
         {
-            var user = new UserDTO()
-            {
-                Id = Guid.NewGuid(),
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-            };
+            var user = _mapper.Map<User>(dto);
 
-            FileHelper.SerializeUsersToFile(user);
-
-            return user;
+            _unitOfWork.Users.Add(user);
+            await _unitOfWork.SaveChangesAsync();
         }
-
-        private static UserDTO UserToDTO(User user) =>
-            new UserDTO
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName
-            };
     }
 }

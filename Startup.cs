@@ -8,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 using SimpleBE.Helpers;
-using SimpleBE.Infrastructure;
 using SimpleBE.Middlewares;
 using SimpleBE.Models;
 
@@ -49,7 +48,7 @@ namespace SimpleBE
             services.AddControllers();
 
             // Register the database context
-            services.AddDbContext<DatabaseContext>(opt =>
+            services.AddDbContext<ApplicationContext>(opt =>
                                                opt.UseInMemoryDatabase("SimpleBE"));
 
             // Config swagger
@@ -63,6 +62,9 @@ namespace SimpleBE
 
             // Register services
             services.RegisterServices();
+
+            // Register mapper
+            services.RegisterMapper();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,10 +87,10 @@ namespace SimpleBE
             app.UseAuthorization();
 
             // Configure handing errors globally
-            app.UseMiddleware<ErrorHandlerMiddleware>();
+            app.UseMiddleware<ErrorHandler>();
 
             // Custom jwt auth middleware
-            app.UseMiddleware<JwtMiddleware>();
+            app.UseMiddleware<JwtHandler>();
 
             app.UseEndpoints(endpoints =>
             {

@@ -1,17 +1,16 @@
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SimpleBE.Middlewares
 {
-    public class ErrorHandlerMiddleware
+    public class ErrorHandler
     {
         private readonly RequestDelegate _next;
 
-        public ErrorHandlerMiddleware(RequestDelegate next)
+        public ErrorHandler(RequestDelegate next)
         {
             _next = next;
         }

@@ -1,11 +1,7 @@
-using System;
-
 namespace SimpleBE.Dtos
 {
-    public class UserDTO
+    public class UserDTO : BaseDTO
     {
-        public Guid Id { get; set; }
-
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -13,7 +9,6 @@ namespace SimpleBE.Dtos
 
     public class CreateUserDTO
     {
-
         public string FirstName { get; set; }
 
         public string LastName { get; set; }

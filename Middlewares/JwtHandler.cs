@@ -9,12 +9,12 @@ using SimpleBE.Utils;
 
 namespace SimpleBE.Middlewares
 {
-    public class JwtMiddleware
+    public class JwtHandler
     {
         private readonly RequestDelegate _next;
         private readonly AppSettings _appSettings;
 
-        public JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings)
+        public JwtHandler(RequestDelegate next, IOptions<AppSettings> appSettings)
         {
             _next = next;
             _appSettings = appSettings.Value;
