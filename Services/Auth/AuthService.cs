@@ -1,66 +1,56 @@
-
-using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using BCryptNet = BCrypt.Net.BCrypt;
+using MapsterMapper;
 
 using SimpleBE.Dtos;
 using SimpleBE.Helpers;
-using SimpleBE.Models;
+using SimpleBE.Entities;
 using SimpleBE.Utils;
+using SimpleBE.Infrastructure;
+using SimpleBE.Enums;
 
 namespace SimpleBE.Services
 {
     public class AuthService : IAuthService
     {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
         private AppSettings _appSettings;
         private IJwtUtils _jwtUtils;
 
-        public AuthService(IOptions<AppSettings> appSettings, IJwtUtils jwtUtils)
+
+        public AuthService(IUnitOfWork unitOfWork,
+            IMapper mapper,
+            IOptions<AppSettings> appSettings,
+            IJwtUtils jwtUtils)
         {
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
             _appSettings = appSettings.Value;
             _jwtUtils = jwtUtils;
         }
 
-        public async Task<AuthResponseDTO> Authenticate(AuthDTO dto)
+        public string SignIn(SignInDTO dto)
         {
-            if (dto.UserName == _appSettings.Admin.UserName && dto.Password == _appSettings.Admin.Password)
+            var user = _unitOfWork.Users.FindByUserName(dto.UserName);
+
+            if (user == null || !BCryptNet.Verify(dto.Password, user.PasswordHash))
             {
-                var user = new AuthResponseDTO()
-                {
-                    Id = _appSettings.Admin.Id,
-                    UserName = _appSettings.Admin.UserName,
-                    FirstName = _appSettings.Admin.FirstName,
-                    LastName = _appSettings.Admin.LastName,
-                };
-
-                user.JwtToken = _jwtUtils.GenerateToken(new User()
-                {
-                    Id = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.FirstName,
-                });
-
-                return user;
+                return null;
             }
 
-            return null;
+            return _jwtUtils.GenerateToken(user);
         }
 
-        public async Task<UserDTO> GetById(Guid id)
+        public async Task SignUp(SignUpDTO dto)
         {
-            if (id == _appSettings.Admin.Id)
-            {
-                var user = new UserDTO()
-                {
-                    Id = id,
-                    FirstName = _appSettings.Admin.FirstName,
-                    LastName = _appSettings.Admin.LastName,
-                };
+            var user = _mapper.Map<User>(dto);
+            user.Role = Role.User;
+            user.PasswordHash = BCryptNet.HashPassword(dto.Password);
 
-                return user;
-            }
-
-            return null;
+            _unitOfWork.Users.Add(user);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

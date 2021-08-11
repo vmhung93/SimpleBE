@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-using SimpleBE.Dtos;
 using SimpleBE.Services;
 
 namespace SimpleBE.Controllers
@@ -40,13 +38,6 @@ namespace SimpleBE.Controllers
             }
 
             return Ok(user);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Post(CreateUserDTO dto)
-        {
-            await _userService.Add(dto);
-            return Ok();
         }
     }
 }

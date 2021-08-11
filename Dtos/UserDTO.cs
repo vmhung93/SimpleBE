@@ -1,3 +1,5 @@
+using SimpleBE.Enums;
+
 namespace SimpleBE.Dtos
 {
     public class UserDTO : BaseDTO
@@ -5,12 +7,11 @@ namespace SimpleBE.Dtos
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
-    }
 
-    public class CreateUserDTO
-    {
-        public string FirstName { get; set; }
+        public string UserName { get; set; }
 
-        public string LastName { get; set; }
+        public Role Role { get; set; }
+
+        public string JwtToken { get; set; }
     }
 }

@@ -1,9 +1,7 @@
 using System;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using SimpleBE.Dtos;
-using SimpleBE.Models;
 using SimpleBE.Infrastructure;
 using MapsterMapper;
 
@@ -30,14 +28,6 @@ namespace SimpleBE.Services
         {
             var user = _unitOfWork.Users.FindById(id);
             return _mapper.Map<UserDTO>(user);
-        }
-
-        public async Task Add(CreateUserDTO dto)
-        {
-            var user = _mapper.Map<User>(dto);
-
-            _unitOfWork.Users.Add(user);
-            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

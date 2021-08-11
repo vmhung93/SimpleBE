@@ -20,14 +20,14 @@ namespace SimpleBE.Middlewares
             _appSettings = appSettings.Value;
         }
 
-        public async Task Invoke(HttpContext context, IAuthService authService, IJwtUtils jwtUtils)
+        public async Task Invoke(HttpContext context, IUserService userService, IJwtUtils jwtUtils)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             var userId = jwtUtils.ValidateToken(token);
 
             if (userId != null)
             {
-                context.Items["User"] = authService.GetById(userId.Value);
+                context.Items["User"] = userService.FindById(userId.Value);
             }
 
             await _next(context);

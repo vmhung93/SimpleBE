@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
-using SimpleBE.Models;
+
+using SimpleBE.Entities;
 
 namespace SimpleBE.Infrastructure
 {

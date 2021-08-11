@@ -21,16 +21,25 @@ namespace SimpleBE.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(AuthDTO dto)
+        [Route("sign_up")]
+        public async Task<IActionResult> SignUp(SignUpDTO dto)
         {
-            var auth = await _authService.Authenticate(dto);
+            await _authService.SignUp(dto);
+            return Ok();
+        }
 
-            if (auth == null)
+        [HttpPost]
+        [Route("sign_in")]
+        public IActionResult SignIn(SignInDTO dto)
+        {
+            var token = _authService.SignIn(dto);
+
+            if (token == null)
             {
                 return Unauthorized();
             }
 
-            return Ok(auth);
+            return Ok(new { token });
         }
     }
 }

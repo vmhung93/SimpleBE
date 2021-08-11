@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -31,6 +32,11 @@ namespace SimpleBE.Middlewares
                     case ApplicationException e:
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
+
+                    case KeyNotFoundException e:
+                        response.StatusCode = (int)HttpStatusCode.NotFound;
+                        break;
+
                     default:
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;

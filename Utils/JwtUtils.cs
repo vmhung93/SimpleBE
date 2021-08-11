@@ -7,15 +7,15 @@ using System.Security.Claims;
 using System.Text;
 
 using SimpleBE.Helpers;
-using SimpleBE.Models;
+using SimpleBE.Entities;
 
 namespace SimpleBE.Utils
 {
     public interface IJwtUtils
     {
-        public string GenerateToken(User user);
+        string GenerateToken(User user);
 
-        public Guid? ValidateToken(string token);
+        Guid? ValidateToken(string token);
     }
 
     public class JwtUtils : IJwtUtils
@@ -35,7 +35,12 @@ namespace SimpleBE.Utils
             // Generate token that is valid for 7 days
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
+                Subject = new ClaimsIdentity(new[] {
+                    new Claim("id", user.Id.ToString()),
+                    new Claim("userName", user.UserName),
+                    new Claim("firstName", user.FirstName),
+                    new Claim("lastName", user.LastName),
+                }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

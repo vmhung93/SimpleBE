@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace SimpleBE.Models
+namespace SimpleBE.Entities
 {
     public class ApplicationContext : DbContext
     {

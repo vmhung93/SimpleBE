@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SimpleBE.Models
+namespace SimpleBE.Entities
 {
     public class BaseEntity
     {
