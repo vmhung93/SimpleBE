@@ -19,7 +19,6 @@ namespace SimpleBE.Services
         private AppSettings _appSettings;
         private IJwtUtils _jwtUtils;
 
-
         public AuthService(IUnitOfWork unitOfWork,
             IMapper mapper,
             IOptions<AppSettings> appSettings,
@@ -31,7 +30,7 @@ namespace SimpleBE.Services
             _jwtUtils = jwtUtils;
         }
 
-        public string SignIn(SignInDTO dto)
+        public AuthDTO SignIn(SignInDTO dto)
         {
             var user = _unitOfWork.Users.FindByUserName(dto.UserName);
 
@@ -40,7 +39,10 @@ namespace SimpleBE.Services
                 return null;
             }
 
-            return _jwtUtils.GenerateToken(user);
+            var auth = _mapper.Map<AuthDTO>(user);
+            auth.Token = _jwtUtils.GenerateToken(user);
+
+            return auth;
         }
 
         public async Task SignUp(SignUpDTO dto)

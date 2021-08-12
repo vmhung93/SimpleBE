@@ -32,14 +32,14 @@ namespace SimpleBE.Controllers
         [Route("sign_in")]
         public IActionResult SignIn(SignInDTO dto)
         {
-            var token = _authService.SignIn(dto);
+            var auth = _authService.SignIn(dto);
 
-            if (token == null)
+            if (auth == null)
             {
                 return Unauthorized();
             }
 
-            return Ok(new { token });
+            return Ok(auth);
         }
     }
 }

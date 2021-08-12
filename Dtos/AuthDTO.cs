@@ -2,6 +2,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SimpleBE.Dtos
 {
+    public class AuthDTO : UserDTO
+    {
+        public string Token { get; set; }
+    }
+
     public class SignInDTO
     {
         [Required]
