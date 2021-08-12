@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using SimpleBE.Authorization;
-using SimpleBE.Dtos;
+using SimpleBE.Enums;
 using SimpleBE.Services;
 
 namespace SimpleBE.Controllers
 {
-    [Authorize]
+    [Authorize(Role.Admin)]
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase
@@ -24,18 +24,17 @@ namespace SimpleBE.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
-            var users = await _userService.GetAll();
+            var users = _userService.FindAll();
             return Ok(users);
         }
 
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public IActionResult GetById(Guid id)
         {
-            var user = await _userService.GetById(id);
+            var user = _userService.FindById(id);
 
             if (user == null)
             {
@@ -46,10 +45,12 @@ namespace SimpleBE.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(CreateUserDTO dto)
+        [Route("seed")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Seed()
         {
-            var user = await _userService.Create(dto);
-            return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+            await _userService.Seed();
+            return Ok();
         }
     }
 }

@@ -14,18 +14,13 @@ The admin has to sign in to the back office side. After sign-in successful, the 
 - Authentication: JSON Web Tokens
 - Swagger
 
-## Database Structure
-Currently, we use the json file to store the list of users.
-
-The user properties are as follows:
+## Before you start
+You need to have an Admin first. Send the request to the URI below to create an Admin. 
 
 ```
-{
-    Id: User's Id (Guid Id)
-    FristName: First name
-    LastName: Last name
-}
+[POST] ​/user​/seed 
 ```
+
 ## API list
 Since I applied Swagger for API document, so you can take a look at Swagger documents for more information.
 

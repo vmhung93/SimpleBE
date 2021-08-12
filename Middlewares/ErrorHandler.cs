@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SimpleBE.Middlewares
 {
-    public class ErrorHandlerMiddleware
+    public class ErrorHandler
     {
         private readonly RequestDelegate _next;
 
-        public ErrorHandlerMiddleware(RequestDelegate next)
+        public ErrorHandler(RequestDelegate next)
         {
             _next = next;
         }
@@ -32,6 +32,11 @@ namespace SimpleBE.Middlewares
                     case ApplicationException e:
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
+
+                    case KeyNotFoundException e:
+                        response.StatusCode = (int)HttpStatusCode.NotFound;
+                        break;
+
                     default:
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;
