@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
+using SimpleBE.Authorization;
+using SimpleBE.Enums;
 using SimpleBE.Services;
 
 namespace SimpleBE.Controllers
 {
+    [Authorize(Role.Admin)]
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase
@@ -38,6 +42,15 @@ namespace SimpleBE.Controllers
             }
 
             return Ok(user);
+        }
+
+        [HttpPost]
+        [Route("seed")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Seed()
+        {
+            await _userService.Seed();
+            return Ok();
         }
     }
 }

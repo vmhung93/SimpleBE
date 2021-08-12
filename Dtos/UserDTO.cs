@@ -11,7 +11,5 @@ namespace SimpleBE.Dtos
         public string UserName { get; set; }
 
         public Role Role { get; set; }
-
-        public string JwtToken { get; set; }
     }
 }
