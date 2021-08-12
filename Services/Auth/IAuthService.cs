@@ -6,7 +6,7 @@ namespace SimpleBE.Services
 {
     public interface IAuthService
     {
-        string SignIn(SignInDTO dto);
+        AuthDTO SignIn(SignInDTO dto);
 
         Task SignUp(SignUpDTO dto);
     }

@@ -19,7 +19,7 @@ namespace SimpleBE.Authorization
         {
             _roles = roles ?? new Role[] { };
         }
-        
+
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             // Skip authorization if it is decorated with [AllowAnonymous] attribute
@@ -33,13 +33,27 @@ namespace SimpleBE.Authorization
             // Authorization
             var user = (UserDTO)context.HttpContext.Items["User"];
 
-            if (user == null || (_roles.Any() && !_roles.Contains(user.Role)))
+            if (user == null)
             {
-                context.Result = new JsonResult(new { message = "Unauthorized"})
+                context.Result = new JsonResult(new { message = "Unauthorized" })
                 {
                     StatusCode = StatusCodes.Status401Unauthorized
                 };
+
+                return;
             }
+
+            if (_roles.Any() && !_roles.Contains(user.Role))
+            {
+                context.Result = new JsonResult(new { message = "Forbidden" })
+                {
+                    StatusCode = StatusCodes.Status403Forbidden
+                };
+
+                return;
+            }
+
+            return;
         }
     }
 }
