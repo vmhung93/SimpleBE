@@ -37,9 +37,7 @@ namespace SimpleBE.Utils
             {
                 Subject = new ClaimsIdentity(new[] {
                     new Claim("id", user.Id.ToString()),
-                    new Claim("userName", user.UserName),
-                    new Claim("firstName", user.FirstName),
-                    new Claim("lastName", user.LastName),
+                    new Claim("userName", user.UserName)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
