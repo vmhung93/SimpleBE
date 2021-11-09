@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.Build.Traversal/3.0.3">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="**\*.*proj" />
+    </ItemGroup>
+
+</Project>
