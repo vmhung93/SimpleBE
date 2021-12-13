@@ -9,6 +9,7 @@ using Xunit;
 using SimpleBE.Api.Controllers;
 using SimpleBE.Api.Dtos;
 using SimpleBE.Api.Services;
+using SimpleBE.Api.Commands;
 
 namespace SimpleBE.UnitTests;
 
@@ -21,7 +22,7 @@ public class AuthControllerTests
     public async Task SignUp_WithSignUpData_ReturnsOk()
     {
         // Arrange
-        var signUpDto = new SignUpDTO()
+        var signUpDto = new SignUpCommand()
         {
             UserName = Guid.NewGuid().ToString(),
             FirstName = Guid.NewGuid().ToString(),

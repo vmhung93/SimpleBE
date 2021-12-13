@@ -8,10 +8,8 @@ namespace SimpleBE.Api.Services
 {
     public interface IUserService
     {
-        IEnumerable<UserDTO> FindAll();
+        Task<IEnumerable<UserDTO>> FindAll();
 
-        UserDTO FindById(Guid id);
-
-        Task Seed();
+        Task<UserDTO> FindById(Guid id);
     }
 }

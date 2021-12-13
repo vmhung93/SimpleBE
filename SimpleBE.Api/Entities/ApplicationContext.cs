@@ -27,6 +27,13 @@ namespace SimpleBE.Api.Entities
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            ModelBuilderExtensions.Seed(modelBuilder);
+            base.OnModelCreating(modelBuilder);
+        }
+
         private void AddTimestamps()
         {
             var entities = ChangeTracker.Entries()
@@ -45,5 +52,7 @@ namespace SimpleBE.Api.Entities
                 }
             }
         }
+
+
     }
 }

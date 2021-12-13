@@ -1,58 +1,26 @@
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using BCryptNet = BCrypt.Net.BCrypt;
-using MapsterMapper;
+using MediatR;
 
 using SimpleBE.Api.Dtos;
-using SimpleBE.Api.Helpers;
-using SimpleBE.Api.Entities;
-using SimpleBE.Api.Utils;
-using SimpleBE.Api.Infrastructure;
-using SimpleBE.Api.Enums;
+using SimpleBE.Api.Commands;
 
 namespace SimpleBE.Api.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService : BaseService, IAuthService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        private AppSettings _appSettings;
-        private IJwtUtils _jwtUtils;
-
-        public AuthService(IUnitOfWork unitOfWork,
-            IMapper mapper,
-            IOptions<AppSettings> appSettings,
-            IJwtUtils jwtUtils)
+        public AuthService(IMediator mediator) : base(mediator)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-            _appSettings = appSettings.Value;
-            _jwtUtils = jwtUtils;
         }
 
-        public AuthDTO SignIn(SignInDTO dto)
+        public async Task<AuthDTO> SignIn(SignInCommand command)
         {
-            var user = _unitOfWork.Users.FindByUserName(dto.UserName);
-
-            if (user == null || !BCryptNet.Verify(dto.Password, user.PasswordHash))
-            {
-                return null;
-            }
-
-            var auth = _mapper.Map<AuthDTO>(user);
-            auth.Token = _jwtUtils.GenerateToken(user);
-
+            var auth = await _mediator.Send(command);
             return auth;
         }
 
-        public async Task SignUp(SignUpDTO dto)
+        public async Task SignUp(SignUpCommand command)
         {
-            var user = _mapper.Map<User>(dto);
-            user.Role = Role.User;
-            user.PasswordHash = BCryptNet.HashPassword(dto.Password);
-
-            _unitOfWork.Users.Add(user);
-            await _unitOfWork.SaveChangesAsync();
+            await _mediator.Send(command);
         }
     }
 }

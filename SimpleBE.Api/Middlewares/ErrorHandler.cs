@@ -1,4 +1,6 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -10,10 +12,12 @@ namespace SimpleBE.Api.Middlewares
     public class ErrorHandler
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger _logger;
 
-        public ErrorHandler(RequestDelegate next)
+        public ErrorHandler(RequestDelegate next, ILogger<ErrorHandler> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -22,14 +26,17 @@ namespace SimpleBE.Api.Middlewares
             {
                 await _next(context);
             }
-            catch (Exception error)
+            catch (Exception exception)
             {
+                _logger.LogError(exception, exception?.Message);
+
                 var response = context.Response;
                 response.ContentType = "application/json";
 
-                switch (error)
+                switch (exception)
                 {
-                    case ApplicationException e:
+                    case ValidationException ve:
+                    case ApplicationException ae:
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
 
@@ -42,7 +49,7 @@ namespace SimpleBE.Api.Middlewares
                         break;
                 }
 
-                var message = JsonSerializer.Serialize(new { message = error?.Message });
+                var message = JsonSerializer.Serialize(new { message = exception?.Message });
                 await response.WriteAsync(message);
             }
         }

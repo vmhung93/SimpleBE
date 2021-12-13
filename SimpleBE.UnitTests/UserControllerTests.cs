@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,44 +19,44 @@ public class UserControllerTests
     private readonly Mock<ILogger<UserController>> loggingStub = new();
 
     [Fact]
-    public void GetById_WithUnexistingItem_ReturnsNotFound()
+    public async Task GetById_WithUnexistingItem_ReturnsNotFound()
     {
         // Arrange
-        userServiceStub.Setup(service => service.FindById(It.IsAny<Guid>())).Returns((UserDTO)null);
+        userServiceStub.Setup(service => service.FindById(It.IsAny<Guid>())).ReturnsAsync(null as UserDTO);
         var controller = new UserController(loggingStub.Object, userServiceStub.Object);
 
         // Act
-        var result = controller.GetById(Guid.NewGuid());
+        var result = await controller.GetById(Guid.NewGuid());
 
         // Assert
         result.Should().BeOfType<NotFoundResult>();
     }
 
     [Fact]
-    public void GetById_WithExistingItem_ReturnsNotFound()
+    public async Task GetById_WithExistingItem_ReturnsNotFound()
     {
         // Arrange
         var expectedUser = CreateRandomUser();
-        userServiceStub.Setup(service => service.FindById(It.IsAny<Guid>())).Returns(expectedUser);
+        userServiceStub.Setup(service => service.FindById(It.IsAny<Guid>())).ReturnsAsync(expectedUser);
         var controller = new UserController(loggingStub.Object, userServiceStub.Object);
 
         // Act
-        var result = controller.GetById(Guid.NewGuid()) as OkObjectResult;
+        var result = await controller.GetById(Guid.NewGuid()) as OkObjectResult;
 
         // Assert
         result?.Value.Should().BeEquivalentTo(expectedUser, options => options.ComparingByMembers<UserDTO>());
     }
 
     [Fact]
-    public void Get_WithExistingItem_ReturnsAllUsers()
+    public async Task Get_WithExistingItem_ReturnsAllUsers()
     {
         // Arrange
         var expectedUsers = new[] { CreateRandomUser(), CreateRandomUser(), CreateRandomUser() };
-        userServiceStub.Setup(service => service.FindAll()).Returns(expectedUsers);
+        userServiceStub.Setup(service => service.FindAll()).ReturnsAsync(expectedUsers);
         var controller = new UserController(loggingStub.Object, userServiceStub.Object);
 
         // Act
-        var result = controller.Get() as OkObjectResult;
+        var result = await controller.Get() as OkObjectResult;
 
         // Assert
         result?.Value.Should().BeEquivalentTo(expectedUsers, options => options.ComparingByMembers<UserDTO>());

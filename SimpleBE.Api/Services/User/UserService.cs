@@ -1,50 +1,29 @@
 using System;
 using System.Collections.Generic;
-using MapsterMapper;
-using BCryptNet = BCrypt.Net.BCrypt;
+using MediatR;
 using System.Threading.Tasks;
 
 using SimpleBE.Api.Dtos;
-using SimpleBE.Api.Infrastructure;
-using SimpleBE.Api.Entities;
+using SimpleBE.Api.Queries;
 
 namespace SimpleBE.Api.Services
 {
-    public class UserService : IUserService
+    public class UserService : BaseService, IUserService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper)
+        public UserService(IMediator mediator) : base(mediator)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
         }
 
-        public IEnumerable<UserDTO> FindAll()
+        public async Task<IEnumerable<UserDTO>> FindAll()
         {
-            var users = _unitOfWork.Users.FindAll();
-            return _mapper.Map<IEnumerable<UserDTO>>(users);
+            var users = await _mediator.Send(new FindUsersQuery());
+            return users;
         }
 
-        public UserDTO FindById(Guid id)
+        public async Task<UserDTO> FindById(Guid id)
         {
-            var user = _unitOfWork.Users.FindById(id);
-            return _mapper.Map<UserDTO>(user);
-        }
-
-        public async Task Seed()
-        {
-            _unitOfWork.Users.Add(new User()
-            {
-                UserName = "admin",
-                FirstName = "Michael",
-                LastName = "Jackson",
-                Role = Enums.Role.Admin,
-                PasswordHash = BCryptNet.HashPassword("handsome@2021")
-            });
-
-            await _unitOfWork.SaveChangesAsync();
+            var user = await _mediator.Send(new FindUserByIdQuery { Id = id });
+            return user;
         }
     }
 }

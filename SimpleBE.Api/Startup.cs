@@ -1,4 +1,6 @@
 using System;
+using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -47,9 +49,11 @@ namespace SimpleBE.Api
 
             services.AddControllers();
 
+            // MediatR
+            services.AddMediatR(typeof(Startup));
+
             // Register the database context
-            services.AddDbContext<ApplicationContext>(opt =>
-                                               opt.UseInMemoryDatabase("SimpleBE"));
+            services.AddDbContext<ApplicationContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("SimpleBE")));
 
             // Config swagger
             services.AddSwaggerGen(c =>
@@ -88,6 +92,10 @@ namespace SimpleBE.Api
 
             // Register mapper
             services.RegisterMapper();
+
+            // Validation
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddValidatorsFromAssembly(typeof(Startup).Assembly);
 
             services.AddRouting(options => options.LowercaseUrls = true);
         }
