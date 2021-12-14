@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
-using SimpleBE.Api.Commands;
-using SimpleBE.Api.Services;
+using SimpleBE.Application.Commands;
+using SimpleBE.Application.Services;
 
 namespace SimpleBE.Api.Controllers
 {

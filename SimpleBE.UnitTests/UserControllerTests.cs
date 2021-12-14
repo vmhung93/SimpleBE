@@ -7,9 +7,9 @@ using Moq;
 using Xunit;
 
 using SimpleBE.Api.Controllers;
-using SimpleBE.Api.Dtos;
-using SimpleBE.Api.Enums;
-using SimpleBE.Api.Services;
+using SimpleBE.Application.Services;
+using SimpleBE.Application.Dtos;
+using SimpleBE.Domain.Enums;
 
 namespace SimpleBE.UnitTests;
 

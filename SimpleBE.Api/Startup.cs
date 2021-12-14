@@ -1,6 +1,3 @@
-using System;
-using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +5,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
 
-using SimpleBE.Api.Entities;
-using SimpleBE.Api.Helpers;
-using SimpleBE.Api.Middlewares;
+using SimpleBE.Application;
+using SimpleBE.Application.Helpers;
+using SimpleBE.Application.Middlewares;
+using SimpleBE.Domain;
+using SimpleBE.Infrastructure;
 
 namespace SimpleBE.Api
 {
@@ -49,11 +49,8 @@ namespace SimpleBE.Api
 
             services.AddControllers();
 
-            // MediatR
-            services.AddMediatR(typeof(Startup));
-
             // Register the database context
-            services.AddDbContext<ApplicationContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("SimpleBE")));
+            services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("SimpleBE")));
 
             // Config swagger
             services.AddSwaggerGen(c =>
@@ -87,17 +84,14 @@ namespace SimpleBE.Api
             // Configure strongly typed settings objects
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-            // Register services
-            services.RegisterServices();
-
-            // Register mapper
-            services.RegisterMapper();
-
-            // Validation
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-            services.AddValidatorsFromAssembly(typeof(Startup).Assembly);
-
             services.AddRouting(options => options.LowercaseUrls = true);
+
+            // Register infrastructure
+            services.AddInfrastructure();
+
+            // Register application
+            services.AddApplication();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

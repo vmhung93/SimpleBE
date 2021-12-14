@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="6.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="Moq" Version="4.16.1" />
@@ -24,7 +25,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SimpleBE.Api\SimpleBE.Api.csproj" />
-    <PackageReference Include="FluentAssertions" Version="6.2.0" />
+    <ProjectReference Include="..\SimpleBE.Application\SimpleBE.Application.csproj" />
+    <ProjectReference Include="..\SimpleBE.Domain\SimpleBE.Domain.csproj" />
+
   </ItemGroup>
-  
+
 </Project>

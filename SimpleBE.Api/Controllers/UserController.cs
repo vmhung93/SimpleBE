@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
-using SimpleBE.Api.Authorization;
-using SimpleBE.Api.Enums;
-using SimpleBE.Api.Services;
+using SimpleBE.Application.Attributes;
+using SimpleBE.Application.Services;
+using SimpleBE.Domain.Enums;
 
 namespace SimpleBE.Api.Controllers
 {
