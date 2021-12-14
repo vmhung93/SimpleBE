@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
-using SimpleBE.Api.Authorization;
-using SimpleBE.Api.Enums;
-using SimpleBE.Api.Services;
+using SimpleBE.Application.Attributes;
+using SimpleBE.Application.Services;
+using SimpleBE.Domain.Enums;
 
 namespace SimpleBE.Api.Controllers
 {
@@ -24,33 +24,18 @@ namespace SimpleBE.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var users = _userService.FindAll();
+            var users = await _userService.FindAll();
             return Ok(users);
         }
 
 
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
-            var user = _userService.FindById(id);
-
-            if (user is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(user);
-        }
-
-        [HttpPost]
-        [Route("seed")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Seed()
-        {
-            await _userService.Seed();
-            return Ok();
+            var user = await _userService.FindById(id);
+            return user is not null ? Ok(user) : NotFound();
         }
     }
 }

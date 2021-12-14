@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
-using SimpleBE.Api.Dtos;
-using SimpleBE.Api.Services;
+using SimpleBE.Application.Commands;
+using SimpleBE.Application.Services;
 
 namespace SimpleBE.Api.Controllers
 {
@@ -22,34 +22,18 @@ namespace SimpleBE.Api.Controllers
 
         [HttpPost]
         [Route("sign_up")]
-        public async Task<IActionResult> SignUp(SignUpDTO dto)
+        public async Task<IActionResult> SignUp(SignUpCommand command)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            await _authService.SignUp(dto);
+            await _authService.SignUp(command);
             return Ok();
         }
 
         [HttpPost]
         [Route("sign_in")]
-        public IActionResult SignIn(SignInDTO dto)
+        public async Task<IActionResult> SignIn(SignInCommand command)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var auth = _authService.SignIn(dto);
-
-            if (auth == null)
-            {
-                return Unauthorized();
-            }
-
-            return Ok(auth);
+            var auth = await _authService.SignIn(command);
+            return auth is not null ? Ok(auth) : Unauthorized();
         }
     }
 }
