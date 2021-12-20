@@ -17,15 +17,15 @@ This is a solution template for creating a new ASP.NET Core Web API
 ## Database Migrations
 To use dotnet-ef for your migrations please add the following flags to your command (values assume you are executing from repository root)
 
-> --project SimpleBE.Domain (optional if in this folder)
+> --project SimpleBE.Infrastructure (optional if in this folder)
 > --startup-project SimpleBE.Api
 > --output-dir Migrations (optional)
 
 For example, to add a new migration from the root folder:
 
-`dotnet ef migrations add "InitDb" --project SimpleBE.Domain --startup-project SimpleBE.Api`
+`dotnet ef migrations add "InitDb" --project SimpleBE.Infrastructure --startup-project SimpleBE.Api`
 
-`dotnet ef database update --project SimpleBE.Domain --startup-project SimpleBE.Api`
+`dotnet ef database update --project SimpleBE.Infrastructure --startup-project SimpleBE.Api`
 
 ## API list
 You can take a look at Swagger documents for more information.
